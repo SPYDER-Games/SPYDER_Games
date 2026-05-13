@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stranger Things - S.P.Y.D.E.R.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: #080000;
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-bottom: 25px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 2px solid #ff2200;
+  color: #ff2200;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.back-btn:hover {
+  background: #ff2200;
+  color: #000;
+  box-shadow: 0 0 20px #ff2200;
+}
+
+.header h1 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 0 10px #ff2200, 0 0 30px #ff2200;
+  animation: redGlow 2s infinite ease-in-out;
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+@keyframes redGlow {
+  0%, 100% { text-shadow: 0 0 10px #ff2200, 0 0 20px #ff2200; }
+  50% { text-shadow: 0 0 25px #ff2200, 0 0 50px #ff0000; color: #ffaaaa; }
+}
+
+.warning {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #ff6666;
+  margin-bottom: 10px;
+}
+
+.update-note {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Season cards */
+.seasons {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 20px 80px;
+}
+
+.season-card {
+  background: rgba(20, 0, 0, 0.85);
+  border: 2px solid #ff220033;
+  border-radius: 16px;
+  padding: 25px 30px;
+  width: 280px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.season-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,34,0,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.season-card:hover {
+  border-color: #ff2200;
+  box-shadow: 0 0 40px rgba(255,34,0,0.4);
+  transform: translateY(-5px);
+}
+.season-card.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.season-card.locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.season-num {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 28px;
+  color: #ff2200;
+  text-shadow: 0 0 15px #ff2200;
+  margin-bottom: 8px;
+}
+
+.season-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.season-eps {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  color: #555;
+  margin-bottom: 15px;
+}
+.season-badge {
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #ff2200;
+  color: #000;
+}
+.season-badge.coming {
+  background: #222;
+  color: #555;
+  border: 1px solid #333;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #080000; }
+::-webkit-scrollbar-thumb { background: #ff2200; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="header">
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅ BACK</button>
+  <h1>⚡ STRANGER THINGS ⚡</h1>
+  <p class="warning">⚠ EPILEPSY WARNING — FLASHING LIGHTS</p>
+  <p class="update-note"></p>
+</div>
+
+<div class="seasons">
+
+  <div class="season-card" onclick="location.href='s1.html'">
+    <div class="season-num">S1</div>
+    <div class="season-title">The Vanishing of Will Byers</div>
+    <div class="season-eps">8 EPISODES • 1983</div>
+    <span class="season-badge">▶ WATCH NOW</span>
+  </div>
+
+  <div class="season-card" onclick="location.href='s2.html'">
+    <div class="season-num">S2</div>
+    <div class="season-title">The Mind Flayer</div>
+    <div class="season-eps">9 EPISODES • 1984</div>
+    <span class="season-badge">▶ WATCH NOW</span>
+  </div>
+
+  <div class="season-card" onclick="location.href='tf85.html'">
+    <div class="season-num">✦ '85 ✦</div>
+    <div class="season-title">Tales From '85</div>
+    <div class="season-eps">10 EPISODES • 1985</div>
+    <span class="season-badge">▶ EXPLORE NOW</span>
+  </div>
+
+  <div class="season-card" onclick="location.href='s3.html'">
+    <div class="season-num">S3</div>
+    <div class="season-title">The Battle of Starcourt</div>
+    <div class="season-eps">8 EPISODES • 1985</div>
+    <span class="season-badge">▶ WATCH NOW</span>
+  </div>
+
+  <div class="season-card" onclick="location.href='s4.html'">
+    <div class="season-num">S4</div>
+    <div class="season-title">Vecna's Curse</div>
+    <div class="season-eps">9 EPISODES • 1986</div>
+    <span class="season-badge">▶ WATCH NOW</span>
+  </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [], traces = [];
+
+function init() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  particles = Array.from({ length: 80 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 3 + 0.5,
+    speedX: (Math.random() - 0.5) * 0.8,
+    speedY: (Math.random() - 0.5) * 0.8,
+    opacity: Math.random() * 0.4 + 0.1,
+    flicker: Math.random() * Math.PI * 2
+  }));
+
+  traces = Array.from({ length: 50 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    len: Math.random() * 200 + 80,
+    angle: Math.random() < 0.5 ? 0 : Math.PI / 2,
+    color: ['#1a0000','#2a0000','#330000'][Math.floor(Math.random() * 3)],
+    pulse: Math.random() * 100,
+    speed: Math.random() * 1.2 + 0.4
+  }));
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(8, 0, 0, 0.2)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  traces.forEach(t => {
+    ctx.strokeStyle = t.color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(t.x, t.y);
+    ctx.lineTo(t.x + Math.cos(t.angle)*t.len, t.y + Math.sin(t.angle)*t.len);
+    ctx.stroke();
+    t.pulse += t.speed;
+    if (t.pulse > 100) t.pulse = 0;
+    let px = t.x + Math.cos(t.angle)*t.len*(t.pulse/100);
+    let py = t.y + Math.sin(t.angle)*t.len*(t.pulse/100);
+    ctx.fillStyle = '#ff2200';
+    ctx.shadowBlur = 8; ctx.shadowColor = '#ff2200';
+    ctx.fillRect(px-1.5, py-1.5, 3, 3);
+    ctx.shadowBlur = 0;
+  });
+
+  particles.forEach(p => {
+    p.flicker += 0.04;
+    p.x += p.speedX; p.y += p.speedY;
+    if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    let flick = 0.6 + Math.sin(p.flicker) * 0.4;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,34,0,${p.opacity * flick})`;
+    ctx.shadowBlur = 6; ctx.shadowColor = '#ff2200';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+init(); draw();
+window.addEventListener('resize', init);
+</script>
+</body>
+</html>
+
+
+
