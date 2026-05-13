@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MOVIES</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #000000;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+  }
+
+  #bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .content-wrapper {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 40px 10px;
+  }
+
+  .back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 2px solid #00E5FF;
+    color: #00E5FF;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .back-btn:hover {
+    background: #00E5FF;
+    color: #000;
+    box-shadow: 0 0 15px #00E5FF;
+  }
+
+  h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 28px;
+    color: #00E5FF;
+    text-shadow: 0 0 10px #00E5FF, 0 0 20px #0077FF;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+  }
+
+  .warning {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    color: #00E5FF;
+    margin-bottom: 40px;
+    opacity: 0.8;
+  }
+
+  /* Grid for the 4 Cards */
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .movie-card {
+    background: rgba(0, 20, 40, 0.8);
+    border: 2px solid #00E5FF44;
+    border-radius: 12px;
+    padding: 40px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .movie-card:hover {
+    border-color: #00E5FF;
+    transform: translateY(-8px);
+    box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+    background: rgba(0, 40, 70, 0.9);
+  }
+
+  .movie-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    display: block;
+    text-shadow: 0 0 5px #00E5FF;
+  }
+
+  .btn-label {
+    display: inline-block;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 8px;
+    padding: 8px 12px;
+    background: #00E5FF;
+    color: #000;
+    border-radius: 4px;
+  }
+
+  .movie-card:hover .btn-label {
+    background: #ffffff;
+    box-shadow: 0 0 10px #ffffff;
+  }
+
+  /* Simple Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #00E5FF; border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="content-wrapper">
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅ BACK</button>
+  <h1>MOVIES</h1>
+  <p class="warning">SELECT A CATEGORY</p>
+
+  <div class="card-container">
+    
+    <a href="marvel.html" class="movie-card">
+      <span class="movie-title">MARVEL</span>
+      <span class="btn-label">EXPLORE</span>
+    </a>
+
+    <a href="scifi.html" class="movie-card">
+      <span class="movie-title">SCI-FI</span>
+      <span class="btn-label">EXPLORE</span>
+    </a>
+
+    <a href="admsndlr.html" class="movie-card">
+      <span class="movie-title">ADAM SANDLER</span>
+      <span class="btn-label">EXPLORE</span>
+    </a>
+
+    <a href="km.html" class="movie-card">
+      <span class="movie-title">KIDS MOVIES</span>
+      <span class="btn-label">EXPLORE</span>
+    </a>
+
+  </div>
+</div>
+
+<script>
+window.onload = function() {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let traces = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initElements();
+  }
+
+  function initElements() {
+    particles = [];
+    traces = [];
+    
+    // Blue/Cyan/White theme
+    const colors = ['#00E5FF', '#0077FF', '#ffffff'];
+
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5,
+        color: colors[Math.floor(Math.random() * 3)],
+        flicker: Math.random() * 100
+      });
+    }
+
+    for (let i = 0; i < 25; i++) {
+      traces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        len: Math.random() * 100 + 100,
+        vertical: Math.random() > 0.5,
+        pulse: Math.random() * 100
+      });
+    }
+  }
+
+  function animate() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Grid Traces
+    ctx.lineWidth = 1;
+    traces.forEach(t => {
+      ctx.strokeStyle = '#002233';
+      ctx.beginPath();
+      ctx.moveTo(t.x, t.y);
+      if(t.vertical) ctx.lineTo(t.x, t.y + t.len);
+      else ctx.lineTo(t.x + t.len, t.y);
+      ctx.stroke();
+
+      t.pulse += 0.5;
+      if(t.pulse > 100) t.pulse = 0;
+    });
+
+    // Draw Particles
+    particles.forEach(p => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+      if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+      if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = p.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  animate();
+};
+</script>
+</body>
+</html>
+
+
+
