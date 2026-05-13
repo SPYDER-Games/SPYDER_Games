@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>S.P.Y.D.E.R. Games v6</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<div id="spyder-notice" style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:rgba(0,243,255,0.07);border:1.5px solid #00f3ff55;border-radius:12px;padding:12px 20px;margin:12px 16px;font-family:'Press Start 2P',cursive;font-size:9px;color:#aad8dd;position:relative;">
+  <span>⭐ Like this site? Also check out</span>
+  <a href="https://spyder-games.trinket.io/sites/spyder-games-new" target="_blank" style="color:#00f3ff;text-decoration:none;text-shadow:0 0 8px #00f3ff88;border-bottom:1px solid #00f3ff55;padding-bottom:1px;">spyder-games-new ↗</a>
+  <button onclick="document.getElementById('spyder-notice').style.display='none'" style="background:transparent;border:1.5px solid #00f3ff44;border-radius:8px;color:#00f3ff;font-family:'Press Start 2P',cursive;font-size:8px;padding:5px 8px;cursor:pointer;">✕ close</button>
+</div>
+
+
+
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #020817;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: #fff;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-bottom: 100px;
+}
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: #050a14;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease, visibility 0.8s;
+  font-family: 'Press Start 2P', cursive;
+}
+#introRain {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+}
+.loader-bar { width: 250px; height: 10px; border: 2px solid #00f3ff; margin: 25px auto; border-radius: 4px; overflow: hidden; }
+.loader-fill { width: 0%; height: 100%; background: #00f3ff; box-shadow: 0 0 15px #00f3ff; animation: loadProg 2.5s forwards ease-in-out; }
+@keyframes loadProg { to { width: 100%; } }
+.hide-intro { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+h1 {
+  position: relative;
+  z-index: 5;
+  margin: 25px 10px;
+  text-align: center;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 22px;
+  animation: headerGlow 3s infinite ease-in-out;
+}
+@keyframes headerGlow {
+  0%, 100% { text-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff; }
+  50% { text-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff; color: #d3d3d3; }
+}
+.version-badge {
+  position: relative;
+  z-index: 5;
+  background: #00f3ff;
+  color: #020817;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-top: -15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px #00f3ff;
+}
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  width: 90%;
+  max-width: 560px;
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+}
+#gameSearch {
+  flex: 1;
+  padding: 15px;
+  font-size: 12px;
+  font-family: 'Press Start 2P', cursive;
+  background: rgba(10, 20, 40, 0.95);
+  border: 3px solid #00f3ff;
+  border-radius: 15px;
+  color: #fff;
+  outline: none;
+}
+#gameSearch::placeholder { color: #557799; }
+.section-label {
+  position: relative;
+  z-index: 5;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: #00f3ff;
+  letter-spacing: 3px;
+  margin: 30px 0 10px;
+  opacity: 0.8;
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 95%;
+  z-index: 10;
+  position: relative;
+}
+.game-btn {
+  color: #D3D3D3;
+  background: rgba(20, 30, 50, 0.8);
+  border: 2px solid #00f3ff44;
+  padding: 12px 18px;
+  margin: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-family: Arial, sans-serif;
+  position: relative;
+  z-index: 10;
+}
+.game-btn:hover {
+  transform: translateY(-3px);
+  border-color: #00f3ff;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(0,243,255,0.5);
+  background: rgba(0,243,255,0.1);
+}
+.new-badge {
+  background: #00f3ff;
+  color: #020817;
+  font-size: 7px;
+  font-family: 'Press Start 2P', cursive;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+.st-btn {
+  color: #ff4444;
+  background: rgba(30, 5, 5, 0.8);
+  border: 2px solid #ff220066;
+  padding: 14px 28px;
+  margin: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-family: Arial, sans-serif;
+  position: relative;
+  z-index: 10;
+  animation: stPulse 3s infinite;
+}
+@keyframes stPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,34,0,0.3); }
+  50% { box-shadow: 0 0 25px rgba(255,34,0,0.6); border-color: #ff2200; }
+}
+.st-btn:hover {
+  border-color: #ff2200;
+  color: #fff;
+  background: rgba(255,34,0,0.2);
+  box-shadow: 0 0 35px #ff2200;
+  transform: translateY(-3px);
+}
+#panicBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  background: #ff2200;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  animation: panicPulse 2s infinite;
+}
+@keyframes panicPulse {
+  0%, 100% { box-shadow: 0 0 15px #ff2200; }
+  50% { box-shadow: 0 0 35px #ff2200; }
+}
+
+/* TOP FIXED BUTTONS */
+#settingsBtn {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 99998;
+  background: rgba(10, 20, 40, 0.9);
+  border: 2px solid #00f3ff;
+  border-radius: 10px;
+  color: #00f3ff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#settingsBtn:hover {
+  background: #00f3ff;
+  color: #020817;
+  box-shadow: 0 0 20px #00f3ff;
+}
+
+/* MUSIC TOGGLE BUTTON */
+#musicToggleBtn {
+  position: fixed;
+  top: 58px;
+  right: 20px;
+  z-index: 99998;
+  background: rgba(10, 20, 40, 0.9);
+  border: 2px solid #00f3ff;
+  border-radius: 10px;
+  color: #00f3ff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#musicToggleBtn:hover {
+  background: #00f3ff;
+  color: #020817;
+  box-shadow: 0 0 20px #00f3ff;
+}
+#musicToggleBtn.playing {
+  border-color: #ffaa00;
+  color: #ffaa00;
+  box-shadow: 0 0 12px rgba(255,170,0,0.4);
+  animation: musicBtnPulse 2s ease-in-out infinite;
+}
+@keyframes musicBtnPulse {
+  0%,100% { box-shadow: 0 0 8px rgba(255,170,0,0.4); }
+  50% { box-shadow: 0 0 20px rgba(255,170,0,0.7); }
+}
+
+/* MUSIC PLAYER WRAPPER */
+#mc-player-wrapper {
+  display: none;
+  position: fixed;
+  top: 105px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99995;
+}
+#mc-player-wrapper.visible {
+  display: block;
+  animation: playerSlideIn 0.3s ease;
+}
+@keyframes playerSlideIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#mc-close-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 10;
+  background: #020817;
+  border: 2px solid #00f3ff;
+  border-radius: 50%;
+  color: #00f3ff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  line-height: 1;
+}
+#mc-close-btn:hover {
+  background: #00f3ff;
+  color: #020817;
+  box-shadow: 0 0 10px #00f3ff;
+}
+
+/* SETTINGS SIDEBAR */
+#settingsSidebar {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100vh;
+  background: rgba(2, 8, 23, 0.97);
+  border-left: 2px solid #00f3ff44;
+  z-index: 99997;
+  transition: right 0.35s ease;
+  padding: 30px 20px;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+}
+#settingsSidebar.open { right: 0; }
+.sidebar-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: #00f3ff;
+  margin-bottom: 6px;
+  text-shadow: 0 0 8px #00f3ff;
+}
+.sidebar-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: 2px solid #00f3ff44;
+  color: #00f3ff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.sidebar-close:hover { background: #00f3ff; color: #020817; }
+.sidebar-section { margin-top: 28px; }
+.sidebar-section-label {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: #557799;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+.bg-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 2px solid #00f3ff22;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.bg-option:hover { border-color: #00f3ff; background: rgba(0,243,255,0.07); }
+.bg-option.active { border-color: #00f3ff; background: rgba(0,243,255,0.12); }
+.bg-preview { width: 36px; height: 36px; border-radius: 6px; flex-shrink: 0; }
+.bg-option-label {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  color: #aaa;
+  line-height: 1.6;
+}
+.bg-option.active .bg-option-label { color: #00f3ff; }
+#sidebarOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99996;
+  display: none;
+}
+#sidebarOverlay.open { display: block; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #020817; }
+::-webkit-scrollbar-thumb { background: #00f3ff; border-radius: 3px; }
+
+/* ===== MUSIC PLAYER STYLES ===== */
+#mc-player {
+  width: 380px;
+  max-width: 96vw;
+  font-family: 'Special Elite', cursive;
+  user-select: none;
+}
+#mc-radio-body {
+  background: linear-gradient(160deg, #c8a96e 0%, #a07840 30%, #8b5e2a 60%, #6b3f10 100%);
+  border-radius: 18px 18px 14px 14px;
+  padding: 16px 20px 14px;
+  box-shadow: 0 0 0 3px #4a2800, 0 0 0 5px #c8a96e, 0 0 0 7px #4a2800, 6px 12px 30px rgba(0,0,0,0.7), inset 0 2px 4px rgba(255,220,150,0.3), inset 0 -2px 6px rgba(0,0,0,0.4);
+  position: relative;
+}
+#mc-radio-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px 18px 14px 14px;
+  background-image: repeating-linear-gradient(92deg, transparent 0px, rgba(0,0,0,0.03) 1px, transparent 2px, rgba(255,200,100,0.04) 4px, transparent 6px);
+  pointer-events: none;
+}
+#mc-brand { text-align: center; margin-bottom: 10px; position: relative; }
+#mc-brand-plate {
+  display: inline-block;
+  background: linear-gradient(135deg, #f5e6c0, #d4a843, #f5e6c0, #b8860b);
+  border: 2px solid #8b6914;
+  border-radius: 4px;
+  padding: 2px 18px 3px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+#mc-brand-text {
+  font-family: 'Special Elite', cursive;
+  font-size: 15px;
+  color: #3a1f00;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255,220,100,0.5);
+}
+#mc-grille {
+  background: #1a0d00;
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-shadow: inset 0 3px 8px rgba(0,0,0,0.8), 0 1px 0 rgba(255,200,100,0.2);
+  border: 2px solid #3a1f00;
+  position: relative;
+  overflow: hidden;
+}
+#mc-grille-dots {
+  display: grid;
+  grid-template-columns: repeat(22, 1fr);
+  gap: 3px;
+  padding: 4px;
+}
+.mc-dot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #0d0600;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.9);
+  transition: background 0.08s, box-shadow 0.08s;
+}
+.mc-dot.lit {
+  background: radial-gradient(circle at 35% 35%, #ffdd44, #ff8800);
+  box-shadow: 0 0 4px #ffaa00, 0 0 8px rgba(255,150,0,0.5);
+}
+#mc-tuner {
+  background: linear-gradient(180deg, #0a0500 0%, #1a0e00 100%);
+  border-radius: 6px;
+  border: 2px solid #3a2000;
+  padding: 8px 12px 6px;
+  margin-bottom: 10px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.9), 0 1px 0 rgba(255,200,100,0.15);
+  position: relative;
+  overflow: hidden;
+}
+#mc-tuner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,150,30,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+#mc-tuner-scale { display: flex; justify-content: space-between; margin-bottom: 2px; padding: 0 2px; }
+#mc-tuner-scale span { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: rgba(255,150,30,0.5); }
+#mc-tuner-bar-wrap {
+  position: relative;
+  height: 14px;
+  background: repeating-linear-gradient(90deg, rgba(255,120,20,0.15) 0px, rgba(255,120,20,0.15) 1px, transparent 1px, transparent 8px);
+  border-radius: 2px;
+  margin-bottom: 6px;
+}
+#mc-tuner-needle {
+  position: absolute;
+  top: -2px; bottom: -2px;
+  width: 2px;
+  background: linear-gradient(180deg, #ff6600, #ffaa00);
+  border-radius: 1px;
+  box-shadow: 0 0 6px #ff8800, 0 0 12px rgba(255,100,0,0.4);
+  left: 5%;
+  transition: left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+#mc-tuner-needle::before {
+  content: '▼';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff8800;
+  font-size: 8px;
+}
+#mc-now-playing { text-align: center; overflow: hidden; white-space: nowrap; height: 16px; }
+#mc-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #ffaa44;
+  text-shadow: 0 0 8px rgba(255,150,30,0.8), 0 0 16px rgba(255,100,0,0.3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+#mc-title.scrolling { animation: mcscroll 9s linear infinite; }
+@keyframes mcscroll {
+  0%   { transform: translateX(120%); }
+  100% { transform: translateX(-120%); }
+}
+#mc-times { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+#mc-elapsed, #mc-total { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(255,150,30,0.6); }
+#mc-status-light {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #220800;
+  transition: all 0.3s;
+}
+#mc-status-light.on {
+  background: #ff4400;
+  box-shadow: 0 0 6px #ff4400, 0 0 12px rgba(255,60,0,0.6);
+  animation: mcblink 2s ease-in-out infinite;
+}
+@keyframes mcblink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+#mc-seekbar {
+  width: 100%; height: 4px;
+  background: rgba(255,120,20,0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  margin-top: 6px;
+  position: relative;
+  border: 1px solid rgba(255,100,0,0.2);
+}
+#mc-seekfill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #ff6600, #ffcc00);
+  border-radius: 2px;
+  pointer-events: none;
+  box-shadow: 0 0 6px rgba(255,150,0,0.6);
+}
+#mc-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.mc-btn {
+  background: linear-gradient(160deg, #d4a843 0%, #8b5e1a 50%, #6b3f0a 100%);
+  border: 2px solid #3a1f00;
+  border-radius: 50%;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #fff8e0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,220,120,0.4), inset 0 -1px 0 rgba(0,0,0,0.3);
+  transition: all 0.1s;
+  position: relative;
+  top: 0;
+}
+.mc-btn:hover {
+  background: linear-gradient(160deg, #e8bc55 0%, #a07030 50%, #7a4f1a 100%);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,230,140,0.5), 0 0 8px rgba(255,180,50,0.3);
+}
+.mc-btn:active { top: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.4); }
+#mc-playbtn {
+  width: 44px !important; height: 44px !important;
+  font-size: 16px !important;
+  background: linear-gradient(160deg, #e8bc55 0%, #b07820 50%, #8b5a10 100%) !important;
+  border-color: #2a1000 !important;
+}
+#mc-vol-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; margin-left: 4px; }
+#mc-vol-label { font-size: 7px; color: rgba(255,200,100,0.6); letter-spacing: 1px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
+#mc-volume {
+  -webkit-appearance: none;
+  width: 50px; height: 4px;
+  background: linear-gradient(90deg, #3a1f00, #8b5e1a);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid #2a1000;
+}
+#mc-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8bc55, #8b5e1a);
+  border: 2px solid #3a1f00;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+}
+#mc-tracklist-wrap {
+  background: linear-gradient(180deg, #0d0700 0%, #1a0e00 100%);
+  border-radius: 6px;
+  border: 2px solid #3a2000;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+}
+#mc-tracklist { max-height: 160px; overflow-y: auto; }
+#mc-tracklist::-webkit-scrollbar { width: 4px; }
+#mc-tracklist::-webkit-scrollbar-track { background: #0d0700; }
+#mc-tracklist::-webkit-scrollbar-thumb { background: #5a3010; border-radius: 2px; }
+.mc-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px; cursor: pointer;
+  border-bottom: 1px solid rgba(255,120,20,0.08);
+  transition: background 0.15s;
+}
+.mc-row:hover { background: rgba(255,120,20,0.08); }
+.mc-row.active { background: rgba(255,120,20,0.15); }
+.mc-icon { color: rgba(255,150,30,0.3); font-size: 9px; width: 10px; }
+.mc-row.active .mc-icon { color: #ffaa44; }
+.mc-rname {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,150,30,0.6);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.mc-row.active .mc-rname { color: #ffcc66; text-shadow: 0 0 6px rgba(255,150,30,0.5); }
+.mc-rdur { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,120,20,0.35); }
+#mc-collapse {
+  text-align: center; padding: 4px;
+  background: rgba(255,120,20,0.05); cursor: pointer;
+  color: rgba(255,150,30,0.3);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  border-top: 1px solid rgba(255,120,20,0.1);
+  transition: all 0.15s;
+}
+#mc-collapse:hover { color: #ffaa44; background: rgba(255,120,20,0.1); }
+#mc-feet { display: flex; justify-content: space-between; padding: 0 20px; margin-top: -2px; }
+.mc-foot {
+  width: 30px; height: 8px;
+  background: linear-gradient(180deg, #3a1f00, #1a0d00);
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+  border: 1px solid #2a1000;
+  border-top: none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<button id="musicToggleBtn" onclick="toggleMusicPlayer()">🎵 MUSIC</button>
+<button id="settingsBtn" onclick="toggleSidebar()">🎨 Backgrounds</button>
+
+<div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div id="settingsSidebar">
+  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  <div class="sidebar-title">⚙ Backgrounds</div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">🎨 BACKGROUND</div>
+    <div class="bg-option active" onclick="setBg('motherboard')" id="bg-motherboard">
+      <div class="bg-preview" style="background:linear-gradient(135deg,#020817,#1a2a3a);border:1px solid #00f3ff44;"></div>
+      <span class="bg-option-label">MOTHERBOARD<br>CIRCUIT</span>
+    </div>
+    <div class="bg-option" onclick="setBg('matrix')" id="bg-matrix">
+      <div class="bg-preview" style="background:linear-gradient(135deg,#000,#003300);border:1px solid #00ff4444;"></div>
+      <span class="bg-option-label">MATRIX<br>RAIN</span>
+    </div>
+    <div class="bg-option" onclick="setBg('starfield')" id="bg-starfield">
+      <div class="bg-preview" style="background:linear-gradient(135deg,#000005,#0a0a2a);border:1px solid #ffffff22;"></div>
+      <span class="bg-option-label">STARFIELD<br>SPACE</span>
+    </div>
+    <div class="bg-option" onclick="setBg('solid')" id="bg-solid">
+      <div class="bg-preview" style="background:#020817;border:1px solid #00f3ff22;"></div>
+      <span class="bg-option-label">SOLID<br>DARK</span>
+    </div>
+    <div class="bg-option" onclick="setBg('synthwave')" id="bg-synthwave">
+      <div class="bg-preview" style="background:linear-gradient(180deg,#0d0020,#1a0035,#ff006622);border:1px solid #ff006644;"></div>
+      <span class="bg-option-label">SYNTHWAVE<br>GRID</span>
+    </div>
+    <div class="bg-option" onclick="setBg('aurora')" id="bg-aurora">
+      <div class="bg-preview" style="background:linear-gradient(135deg,#000a10,#003322,#001a33);border:1px solid #00ff8844;"></div>
+      <span class="bg-option-label">AURORA<br>BOREALIS</span>
+    </div>
+    <div class="bg-option" onclick="setBg('upsidedown')" id="bg-upsidedown">
+      <div class="bg-preview" style="background:linear-gradient(135deg,#0a0000,#1a0000);border:1px solid #ff220044;"></div>
+      <span class="bg-option-label">UPSIDE<br>DOWN</span>
+    </div>
+  </div>
+</div>
+
+<button class="panicBtn" onclick="window.open('https://baps.instructure.com/login/saml', '_blank')">🚨</button>
+
+<div id="intro-overlay">
+  <canvas id="introRain"></canvas>
+  <div style="text-align:center;">
+    <h1 style="color:#00f3ff;font-size:18px;">S.P.Y.D.E.R. GAMES</h1>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <p style="color:#00f3ff;font-size:9px;font-family:'Press Start 2P',cursive;">V6 LOADING...</p>
+  </div>
+</div>
+
+<div id="mc-player-wrapper">
+  <button id="mc-close-btn" onclick="toggleMusicPlayer()">✕</button>
+  <div id="mc-player">
+    <div id="mc-radio-body">
+      <div id="mc-brand">
+        <div id="mc-brand-plate">
+          <span id="mc-brand-text">S·P·Y·D·E·R</span>
+        </div>
+      </div>
+      <div id="mc-grille">
+        <div id="mc-grille-dots"></div>
+      </div>
+      <div id="mc-tuner">
+        <div id="mc-tuner-scale">
+          <span>54</span><span>60</span><span>70</span><span>80</span>
+          <span>90</span><span>100</span><span>108</span>
+        </div>
+        <div id="mc-tuner-bar-wrap">
+          <div id="mc-tuner-needle"></div>
+        </div>
+        <div id="mc-now-playing">
+          <div id="mc-title">— SELECT A TRACK —</div>
+        </div>
+        <div id="mc-times">
+          <span id="mc-elapsed">0:00</span>
+          <div id="mc-status-light"></div>
+          <span id="mc-total">0:00</span>
+        </div>
+        <div id="mc-seekbar" onclick="mcSeek(event)">
+          <div id="mc-seekfill"></div>
+        </div>
+      </div>
+      <div id="mc-controls">
+        <button class="mc-btn" onclick="mcPrev()">&#9664;&#9664;</button>
+        <button class="mc-btn" onclick="mcSkipBack()">&#9194;</button>
+        <button class="mc-btn" id="mc-playbtn" onclick="mcToggle()">&#9654;</button>
+        <button class="mc-btn" onclick="mcSkipFwd()">&#9193;</button>
+        <button class="mc-btn" onclick="mcNext()">&#9654;&#9654;</button>
+        <div id="mc-vol-wrap">
+          <span id="mc-vol-label">VOL</span>
+          <input id="mc-volume" type="range" min="0" max="1" step="0.01" value="1" oninput="mcSetVol(this.value)">
+        </div>
+      </div>
+      <div id="mc-tracklist-wrap">
+        <div id="mc-tracklist"></div>
+        <div id="mc-collapse" onclick="mcCollapse()">&#9650; hide</div>
+      </div>
+    </div>
+    <div id="mc-feet">
+      <div class="mc-foot"></div>
+      <div class="mc-foot"></div>
+    </div>
+  </div>
+</div>
+
+<audio id="mc-audio"></audio>
+
+<h1>S.P.Y.D.E.R. Games</h1>
+<div class="version-badge">V6 🎮</div>
+
+<div class="search-row">
+  <input type="text" id="gameSearch" onkeyup="filterGames()" placeholder="SEARCH GAMES...">
+</div>
+
+<p style="position:relative;z-index:5;font-size:10px;color:#557799;font-family:'Press Start 2P',cursive;margin:0 0 10px;text-align:center;">Press ESC to go back from games</p>
+
+<div class="section-label">🎮 GAMES</div>
+<div class="button-row" id="gameContainer">
+  <button class="game-btn" onclick="location.href='clash.html'">Clash of Vikings</button>
+  <button class="game-btn" onclick="location.href='bacon.html'">Bacon May Die</button>
+  <button class="game-btn" onclick="location.href='ngon.html'">N-Gon</button>
+  <button class="game-btn" onclick="location.href='drivenwild.html'">Driven Wild</button>
+  <button class="game-btn" onclick="location.href='ninja.html'">Ninja V.S. EvilCorp</button>
+  <button class="game-btn" onclick="location.href='fish.html'">Tiny Fishing</button>
+  <button class="game-btn" onclick="location.href='retro.html'">Retro Bowl</button>
+  <button class="game-btn" onclick="location.href='paper.html'">Paper.io 2</button>
+  <button class="game-btn" onclick="location.href='gobble.html'">Gobble</button>
+  <button class="game-btn" onclick="location.href='drive.html'">Drive Mad</button>
+  <button class="game-btn" onclick="location.href='basket.html'">Basket Bros</button>
+  <button class="game-btn" onclick="location.href='angry.html'">Angry Birds</button>
+  <button class="game-btn" onclick="location.href='duck2.html'">Duck Life 2</button>
+    <button class="game-btn" onclick="location.href='brotato.html'">Brotato</button>
+        <button class="game-btn" onclick="location.href='boxing.html'">Big Shot Boxing</button>
+    <button class="game-btn" onclick="location.href='sand.html'">Sandboxels</button>
+    <button class="game-btn" onclick="location.href='silk.html'">Silk</button>
+    <button class="game-btn" onclick="location.href='college.html'">retro bowl college</button>
+    <button class="game-btn" onclick="location.href='fruit.html'">fruit ninja</button>
+    <button class="game-btn" onclick="location.href='bow.html'">bow masters</button>
+    <button class="game-btn" onclick="location.href='bounce.html'">Bounce masters</button>
+    <button class="game-btn" onclick="location.href='blackjack.html'">Black jack</button>
+    <button class="game-btn" onclick="location.href='mc.html'">minecraft pocket edtion</button>
+    <button class="game-btn" onclick="location.href='monkey.html'">Monkey Mart</button>
+    <button class="game-btn" onclick="location.href='2048.html'">2048</button>
+    <button class="game-btn" onclick="location.href='tag.html'">tag</button>
+    <button class="game-btn" onclick="location.href='csgo.html'">csgo clicker</button>
+    <button class="game-btn" onclick="location.href='mototxm2.html'">motox3m 2</button>
+    <button class="game-btn" onclick="location.href='motoxm3.html'">motox3m 3</button>
+    <button class="game-btn" onclick="location.href='ovo.html'">ovo</button>
+    <button class="game-btn" onclick="location.href='ovo2.html'">ovo 2</button>
+    <button class="game-btn" onclick="location.href='ovo3.html'">ovo 3: Dimensions</button>
+    <button class="game-btn" onclick="location.href='rocket.html'">Rocket League</button>
+    <button class="game-btn" onclick="location.href='run3.html'">Run 3</button>
+    <button class="game-btn" onclick="location.href='slither.html'">slither.io</button>
+    <button class="game-btn" onclick="location.href='sonicmania.html'">Sonic Mania Plus</button>
+    <button class="game-btn" onclick="location.href='soniccd.html'">Sonic cd</button>
+    <button class="game-btn" onclick="location.href='cutrope.html'">cut the rope</button>
+    <button class="game-btn" onclick="location.href='slowroads.html'">Slow Roads</button>
+    <button class="game-btn" onclick="location.href='pushluck.html'">Push your luck</button>
+    <button class="game-btn" onclick="location.href='mario.html'">Super Mario Bros.</button>
+
+</div>
+
+<div class="section-label">📦 MORE STUFF</div>
+<div class="button-row">
+  <button class="game-btn" onclick="openCloakedTab()">🕵️ About Blank</button>
+  <button class="game-btn" onclick="location.href='credits.html'">✦ Credits</button>
+      <button class="game-btn" onclick="location.href='sound.html'">🎤 Soundboard</button>
+
+</div>
+
+<div class="section-label">📺 STREAMING</div>
+<div class="button-row">
+  <button class="st-btn" onclick="location.href='st.html'">🙃 Stranger Things</button>
+  <button class="game-btn" onclick="location.href='invc.html'">🦸 INVINCIBLE</button>
+  <button class="game-btn" onclick="location.href='movie.html'">🎬 Movies</button>
+</div>
+
+<script>
+// PANIC
+function panic() { window.location.href = "https://classroom.google.com"; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') panic(); });
+
+// CLOAKING
+function openCloakedTab() {
+  var win = window.open('about:blank', '_blank');
+  var iframe = win.document.createElement('iframe');
+  iframe.src = "https://spydergames.trinket.io/sites/spyder";
+  iframe.style.cssText = "width:100vw;height:100vh;border:none;position:fixed;top:0;left:0;";
+  win.document.body.appendChild(iframe);
+  win.document.body.style.cssText = "margin:0;padding:0;";
+}
+
+// SEARCH
+function filterGames() {
+  let val = document.getElementById('gameSearch').value.toLowerCase();
+  document.querySelectorAll('#gameContainer .game-btn').forEach(btn => {
+    btn.style.display = btn.innerText.toLowerCase().includes(val) ? "" : "none";
+  });
+}
+
+// SIDEBAR
+function toggleSidebar() {
+  document.getElementById('settingsSidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('settingsSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// MUSIC PLAYER TOGGLE
+function toggleMusicPlayer() {
+  document.getElementById('mc-player-wrapper').classList.toggle('visible');
+}
+
+// Update button glow when audio plays/pauses
+document.getElementById('mc-audio').addEventListener('play', function() {
+  document.getElementById('musicToggleBtn').classList.add('playing');
+});
+document.getElementById('mc-audio').addEventListener('pause', function() {
+  document.getElementById('musicToggleBtn').classList.remove('playing');
+});
+
+// BACKGROUND ENGINE
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let currentBg = 'motherboard';
+let animId = null;
+
+function setBg(name) {
+  currentBg = name;
+  localStorage.setItem('spyder-bg', name);
+  document.querySelectorAll('.bg-option').forEach(el => el.classList.remove('active'));
+  document.getElementById('bg-' + name).classList.add('active');
+  if (animId) cancelAnimationFrame(animId);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ({ motherboard: bgMotherboard, matrix: bgMatrix, starfield: bgStarfield, solid: bgSolid, synthwave: bgSynthwave, aurora: bgAurora, upsidedown: bgUpsideDown })[name]();
+}
+
+function bgMotherboard() {
+  let traces = [];
+  const grid = 20;
+  let bgBuffer = document.createElement('canvas');
+  let bgCtx = bgBuffer.getContext('2d');
+
+  function createTrace() {
+    const isVertical = Math.random() > 0.5;
+    const len = Math.floor(Math.random() * 5 + 3) * grid;
+    const color = ['#FFFFFF', '#888888', '#333333'][Math.floor(Math.random() * 3)];
+    const x = Math.floor(Math.random() * canvas.width / grid) * grid;
+    const y = Math.floor(Math.random() * canvas.height / grid) * grid;
+    const turnAt = Math.random() * 0.7 + 0.2;
+    const hasTurn = Math.random() > 0.5;
+    const dir = isVertical ? 'v' : 'h';
+
+    // Pre-calculate coordinates for the pulse to follow
+    const midX = dir === 'h' ? x + len * turnAt : x;
+    const midY = dir === 'v' ? y + len * turnAt : y;
+    const endX = dir === 'h' ? x + len : (hasTurn ? x + grid * 2 : x);
+    const endY = dir === 'v' ? y + len : (hasTurn ? y + grid * 2 : y);
+
+    return { x, y, midX, midY, endX, endY, len, color, hasTurn, turnAt, dir,
+             pulsePos: 0, speed: Math.random() * 2 + 1 };
+  }
+
+  function init() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    bgBuffer.width = canvas.width;
+    bgBuffer.height = canvas.height;
+
+    // 1. Draw Static Elements to Buffer (Optimization)
+    bgCtx.fillStyle = '#050505';
+    bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw "CPU Chips"
+    for(let i=0; i<5; i++) {
+        const cx = Math.floor(Math.random() * canvas.width / 100) * 100;
+        const cy = Math.floor(Math.random() * canvas.height / 100) * 100;
+        bgCtx.fillStyle = '#111';
+        bgCtx.strokeStyle = '#444';
+        bgCtx.lineWidth = 2;
+        bgCtx.fillRect(cx, cy, 80, 80);
+        bgCtx.strokeRect(cx, cy, 80, 80);
+        // Chip pins
+        bgCtx.strokeStyle = '#888';
+        for(let j=0; j<80; j+=10) {
+            bgCtx.strokeRect(cx-5, cy+j, 5, 2); 
+            bgCtx.strokeRect(cx+80, cy+j, 5, 2);
+        }
+    }
+
+    traces = Array.from({ length: 60 }, createTrace);
+
+    // Draw Traces and Vias to Buffer
+    traces.forEach(t => {
+      bgCtx.strokeStyle = t.color;
+      bgCtx.lineWidth = 1.5;
+      bgCtx.beginPath();
+      bgCtx.moveTo(t.x, t.y);
+      if (t.hasTurn) { bgCtx.lineTo(t.midX, t.midY); bgCtx.lineTo(t.endX, t.endY); }
+      else { bgCtx.lineTo(t.endX, t.endY); }
+      bgCtx.stroke();
+      bgCtx.fillStyle = t.color;
+      bgCtx.beginPath();
+      bgCtx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+      bgCtx.arc(t.endX, t.endY, 2, 0, Math.PI * 2);
+      bgCtx.fill();
+    });
+  }
+
+  function draw() {
+    if (currentBg !== 'motherboard') return;
+
+    // Draw the pre-rendered background
+    ctx.drawImage(bgBuffer, 0, 0);
+
+    // Only animate the Neon Blue pulses
+    ctx.fillStyle = '#00f3ff';
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#00f3ff';
+
+    traces.forEach(t => {
+      t.pulsePos += t.speed;
+      if (t.pulsePos > t.len) t.pulsePos = 0;
+
+      let px, py;
+      if (t.hasTurn && t.pulsePos > t.len * t.turnAt) {
+          const over = t.pulsePos - (t.len * t.turnAt);
+          const factor = over / (t.len * (1 - t.turnAt));
+          px = t.midX + (t.endX - t.midX) * factor;
+          py = t.midY + (t.endY - t.midY) * factor;
+      } else {
+          const factor = t.pulsePos / (t.hasTurn ? t.len * t.turnAt : t.len);
+          px = t.x + (t.midX - t.x) * factor;
+          py = t.y + (t.midY - t.y) * factor;
+      }
+      ctx.fillRect(px - 2, py - 2, 4, 4);
+    });
+    
+    ctx.shadowBlur = 0;
+    animId = requestAnimationFrame(draw);
+  }
+
+  init();
+  draw();
+}
+
+function bgMatrix() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const cols = Math.floor(canvas.width / 16);
+    const drops = Array(cols).fill(1);
+    
+    let startTime = Date.now();
+
+    function draw() {
+        if (currentBg !== 'matrix') return;
+
+        const now = Date.now();
+        const totalLoop = 8000; // 5s SPYDER + 3s Binary
+        const elapsed = (now - startTime) % totalLoop;
+
+        let charSet = 'SPYDER';
+        let isBinaryMode = false;
+        
+        // Determine Mode: 0-5s is SPYDER, 5-8s is Binary
+        if (elapsed < 5000) {
+            charSet = 'SPYDER';
+            isBinaryMode = false;
+        } else {
+            charSet = '10';
+            isBinaryMode = true;
+        }
+
+        // Draw background fade
+        ctx.fillStyle = 'rgba(2, 8, 23, 0.15)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // PIXEL WAVE LOGIC
+        let waveY = -1;
+        let waveColor = '';
+
+        // Transition 1: SPYDER -> Binary (Starts at 4.5s, ends at 5.5s)
+        if (elapsed > 4500 && elapsed < 5500) {
+            const progress = (elapsed - 4500) / 1000;
+            waveY = progress * canvas.height;
+            waveColor = Math.random() > 0.5 ? '#ff00ff' : '#39ff14';
+        } 
+        // Transition 2: Binary -> SPYDER (Starts at 7.5s, ends at 8s/0.5s)
+        else if (elapsed > 7500 || elapsed < 500) {
+            const progElapsed = elapsed > 7500 ? elapsed - 7500 : elapsed + 500;
+            const progress = progElapsed / 1000;
+            waveY = progress * canvas.height;
+            waveColor = '#00f3ff';
+        }
+
+        // Draw the drops
+        drops.forEach((y, i) => {
+            const text = charSet[Math.floor(Math.random() * charSet.length)];
+            ctx.font = '14px monospace';
+
+            if (isBinaryMode) {
+                // Neon Pink/Green for Binary
+                ctx.fillStyle = i % 2 === 0 ? '#ff00ff' : '#39ff14';
+            } else {
+                // Neon Blue/White for SPYDER
+                ctx.fillStyle = i % 10 === 0 ? '#ffffff' : '#00f3ff';
+            }
+
+            ctx.fillText(text, i * 16, y * 16);
+
+            if (y * 16 > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        });
+
+        // Draw the Pixel Wave
+        if (waveY !== -1) {
+            const pixelSize = 25; 
+            ctx.fillStyle = waveColor;
+            for (let x = 0; x < canvas.width; x += pixelSize) {
+                const randomOffset = (Math.random() - 0.5) * 50;
+                ctx.fillRect(x, waveY + randomOffset, pixelSize, pixelSize * 2);
+            }
+        }
+
+        animId = requestAnimationFrame(draw);
+    }
+    draw();
+}
+function bgStarfield() {
+  ctx.fillStyle='#000005'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  let stars = Array.from({length:200}, () => ({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.5+0.3, speed:Math.random()*0.5+0.1, flicker:Math.random()*Math.PI*2 }));
+  function draw() {
+    if (currentBg !== 'starfield') return;
+    ctx.fillStyle='rgba(0,0,5,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s => {
+      s.flicker+=0.04; s.x-=s.speed;
+      if(s.x<0){s.x=canvas.width; s.y=Math.random()*canvas.height;}
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${0.5+Math.sin(s.flicker)*0.5})`; ctx.fill();
+    });
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function bgSolid() {
+  ctx.fillStyle='#020817'; ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function bgSynthwave() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  let t = 0;
+
+  function draw() {
+    if (currentBg !== 'synthwave') return;
+
+    const pSize = 4; // Global pixel resolution
+    const horizonY = Math.floor((canvas.height * 0.52) / pSize) * pSize;
+
+    // 1. BACKGROUND (Deep Purple)
+    ctx.fillStyle = '#0d0020';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 2. PIXELATED RETRO SUN
+    const sunRadius = 120;
+    const centerX = Math.floor((canvas.width / 2) / pSize) * pSize;
+    const centerY = horizonY;
+
+    for (let y = -sunRadius; y < sunRadius; y += pSize) {
+      // Calculate width of sun at this Y level (Pythagoras)
+      const xBounds = Math.sqrt(sunRadius * sunRadius - y * y);
+      
+      // Retro "Sun Strips" - skip lines as we go down
+      const stripGap = Math.floor((y + sunRadius) / 25);
+      if (y > 0 && (Math.floor(y / pSize) % (stripGap + 1) === 0)) continue;
+
+      // Color Gradient: Pink to Orange
+      const ratio = (y + sunRadius) / (sunRadius * 2);
+      const r = 255;
+      const g = Math.floor(110 * ratio);
+      const b = Math.floor(199 * (1 - ratio));
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+
+      const startX = centerX - Math.floor(xBounds / pSize) * pSize;
+      const width = (Math.floor(xBounds / pSize) * pSize) * 2;
+      ctx.fillRect(startX, centerY + y, width, pSize);
+    }
+
+    // 3. PIXEL GRID FLOOR
+    const gridColor = 'rgba(255, 0, 200,';
+    
+    // Horizontal Lines (Moving towards viewer)
+    for (let i = 0; i < 15; i++) {
+      const lineSpeed = (t * 2) % 40;
+      const y = horizonY + (i * i * 3) + lineSpeed; // Exponential spacing for perspective
+      
+      if (y < canvas.height) {
+        ctx.fillStyle = `${gridColor}${0.1 + (i * 0.05)})`;
+        ctx.fillRect(0, Math.floor(y / pSize) * pSize, canvas.width, pSize);
+      }
+    }
+
+    // Vertical Lines (Perspective)
+    const totalLines = 20;
+    for (let i = -totalLines; i <= totalLines; i++) {
+      ctx.fillStyle = `${gridColor}0.2)`;
+      const xBottom = (canvas.width / 2) + (i * 120);
+      const xTop = canvas.width / 2;
+
+      // We draw these as a series of pixel steps to keep it "crunchy"
+      for (let step = 0; step < 1; step += 0.05) {
+        const currY = horizonY + (canvas.height - horizonY) * step;
+        const currX = xTop + (xBottom - xTop) * step;
+        ctx.fillRect(Math.floor(currX / pSize) * pSize, Math.floor(currY / pSize) * pSize, pSize, pSize);
+      }
+    }
+
+    t++;
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function bgAurora() {
+  let t = 0;
+  function draw() {
+    if (currentBg !== 'aurora') return;
+    ctx.fillStyle='rgba(0,5,10,0.15)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    [['rgba(0,255,120,',0],['rgba(0,180,255,',2],['rgba(120,0,255,',4]].forEach(([c,offset]) => {
+      for(let i=0;i<3;i++){
+        const x=canvas.width*(0.15+offset*0.1+i*0.2);
+        const y=canvas.height*0.35+Math.sin(t*0.01+offset+i)*90;
+        const g=ctx.createRadialGradient(x,y,0,x,y,180+Math.sin(t*0.02+i)*60);
+        g.addColorStop(0,c+'0.1)'); g.addColorStop(1,c+'0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height);
+      }
+    });
+    t++;
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function bgUpsideDown() {
+  // Create a mix of red and gray particles
+  let particles = Array.from({length:80}, () => {
+    const isRed = Math.random() > 0.5;
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3 + 1,
+      speedX: (Math.random() - 0.5) * 0.8,
+      speedY: (Math.random() - 0.5) * 0.8,
+      opacity: Math.random() * 0.6 + 0.2,
+      // Assign color properties based on type
+      color: isRed ? '255, 30, 0' : '160, 160, 170',
+      glow: isRed ? '#ff2200' : '#ffffff'
+    };
+  });
+
+  function draw() {
+    if (currentBg !== 'upsidedown') return;
+
+    // Darker, neutral background for better contrast
+    ctx.fillStyle = 'rgba(8, 8, 10, 0.2)'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      
+      ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = p.glow;
+      ctx.fill();
+      ctx.shadowBlur = 0; // Reset shadow for performance
+
+      // Movement
+      p.x += p.speedX;
+      p.y += p.speedY;
+
+      // Bounce
+      if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+      if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    });
+
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+// INTRO RAIN
+const rainCanvas = document.getElementById("introRain");
+const rtx = rainCanvas.getContext("2d");
+let rainDrops = [], activeRain = true;
+function initRain() {
+  rainCanvas.width = window.innerWidth; rainCanvas.height = window.innerHeight;
+  rainDrops = Array.from({length:100}, () => ({ x:Math.random()*rainCanvas.width, y:Math.random()*-rainCanvas.height, speed:Math.random()*7+4, size:Math.random()*3+2 }));
+}
+function drawRain() {
+  if (!activeRain) return;
+  rtx.clearRect(0,0,rainCanvas.width,rainCanvas.height);
+  rtx.fillStyle="#00f3ff"; rtx.shadowBlur=10; rtx.shadowColor="#00f3ff";
+  rainDrops.forEach(d => {
+    rtx.fillRect(d.x,d.y,d.size,d.size*4);
+    d.y+=d.speed;
+    if(d.y>rainCanvas.height){d.y=-20; d.x=Math.random()*rainCanvas.width;}
+  });
+  requestAnimationFrame(drawRain);
+}
+
+window.addEventListener('load', () => {
+  initRain(); drawRain();
+  const saved = localStorage.getItem('spyder-bg') || 'motherboard';
+  setBg(saved);
+  setTimeout(() => {
+    document.getElementById('intro-overlay').classList.add('hide-intro');
+    activeRain = false;
+  }, 3000);
+});
+window.addEventListener('resize', () => { initRain(); setBg(currentBg); });
+
+// ===== MUSIC PLAYER LOGIC =====
+(function() {
+  var tracks = [
+    {name: "Key",               src: "https://helgawesome2024-glitch.github.io/spyder-audio/1-01.%20Key.mp3"},
+    {name: "Moog City",         src: "https://helgawesome2024-glitch.github.io/spyder-audio/1-06.%20Moog%20City.mp3"},
+    {name: "Sweden",            src: "https://helgawesome2024-glitch.github.io/spyder-audio/1-18.%20Sweden.mp3"},
+    {name: "Moog City 2",       src: "https://helgawesome2024-glitch.github.io/spyder-audio/2-06.%20Moog%20City%202.mp3"},
+    {name: "Aria Math",         src: "https://helgawesome2024-glitch.github.io/spyder-audio/2-13.%20Aria%20Math.mp3"},
+    {name: "Haggstrom",         src: "https://helgawesome2024-glitch.github.io/spyder-audio/hal1.mp3"},
+    {name: "Subwoofer Lullaby", src: "https://helgawesome2024-glitch.github.io/spyder-audio/hal3.mp3"},
+    {name: "Wet Hands",         src: "https://helgawesome2024-glitch.github.io/spyder-audio/piano1.mp3"},
+    {name: "Mice on Venus",     src: "https://helgawesome2024-glitch.github.io/spyder-audio/piano3.mp3"},
+  ];
+
+  var audio       = document.getElementById('mc-audio');
+  var playBtn     = document.getElementById('mc-playbtn');
+  var seekFill    = document.getElementById('mc-seekfill');
+  var elapsedEl   = document.getElementById('mc-elapsed');
+  var totalEl     = document.getElementById('mc-total');
+  var titleEl     = document.getElementById('mc-title');
+  var needle      = document.getElementById('mc-tuner-needle');
+  var statusLight = document.getElementById('mc-status-light');
+  var tracklist   = document.getElementById('mc-tracklist');
+  var collapseDiv = document.getElementById('mc-collapse');
+  var grilleDots  = document.getElementById('mc-grille-dots');
+  var listVisible = true;
+  var current     = 0;
+  var animTimer;
+
+  for (var d = 0; d < 88; d++) {
+    var dot = document.createElement('div');
+    dot.className = 'mc-dot';
+    grilleDots.appendChild(dot);
+  }
+  var dots = grilleDots.querySelectorAll('.mc-dot');
+
+  function animateDots() {
+    if (audio.paused) {
+      dots.forEach(function(d){ d.classList.remove('lit'); });
+      return;
+    }
+    var count = Math.floor(Math.random() * 20);
+    dots.forEach(function(d){ d.classList.remove('lit'); });
+    for (var i = 0; i < count; i++) {
+      dots[Math.floor(Math.random() * dots.length)].classList.add('lit');
+    }
+    animTimer = setTimeout(function(){ requestAnimationFrame(animateDots); }, 80);
+  }
+
+  function fmt(s) {
+    s = Math.floor(s);
+    return Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));
+  }
+
+  function buildList() {
+    tracklist.innerHTML = '';
+    tracks.forEach(function(t, i) {
+      var row = document.createElement('div');
+      row.className = 'mc-row';
+      row.id = 'mc-row-'+i;
+      row.innerHTML = '<span class="mc-icon">&#9654;</span>'
+          +'<span class="mc-rname">'+t.name+'</span>'
+          +'<span class="mc-rdur" id="mc-dur-'+i+'">--:--</span>';
+      row.onclick = function(){ loadTrack(i, true); };
+      tracklist.appendChild(row);
+    });
+  }
+
+  function highlight(i) {
+    document.querySelectorAll('.mc-row').forEach(function(r){r.classList.remove('active');});
+    var row = document.getElementById('mc-row-'+i);
+    if (row) { row.classList.add('active'); row.scrollIntoView({block:'nearest'}); }
+    needle.style.left = (5 + (i/(tracks.length-1))*90) + '%';
+  }
+
+  function loadTrack(i, play) {
+    current = i;
+    audio.src = tracks[i].src;
+    audio.load();
+    titleEl.classList.remove('scrolling');
+    titleEl.textContent = tracks[i].name;
+    void titleEl.offsetWidth;
+    titleEl.classList.add('scrolling');
+    highlight(i);
+    seekFill.style.width = '0%';
+    elapsedEl.textContent = '0:00';
+    totalEl.textContent = '--:--';
+    if (play) {
+      audio.play().then(function(){
+        playBtn.innerHTML = '&#9646;&#9646;';
+      }).catch(function(){});
+    }
+  }
+
+  audio.addEventListener('loadedmetadata', function(){
+    totalEl.textContent = fmt(audio.duration);
+    var d = document.getElementById('mc-dur-'+current);
+    if (d) d.textContent = fmt(audio.duration);
+  });
+  audio.addEventListener('timeupdate', function(){
+    if (!audio.duration) return;
+    seekFill.style.width=(audio.currentTime/audio.duration*100)+'%';
+    elapsedEl.textContent=fmt(audio.currentTime);
+  });
+  audio.addEventListener('play', function(){
+    statusLight.classList.add('on');
+    clearTimeout(animTimer);
+    animateDots();
+  });
+  audio.addEventListener('pause', function(){
+    statusLight.classList.remove('on');
+    clearTimeout(animTimer);
+    dots.forEach(function(d){d.classList.remove('lit');});
+  });
+  audio.addEventListener('ended', function(){ mcNext(); });
+
+  window.mcToggle = function(){
+    if(audio.paused){
+      audio.play().then(function(){
+        playBtn.innerHTML='&#9646;&#9646;';
+      }).catch(function(e){ console.warn('Playback blocked:', e); });
+    } else {
+      audio.pause();
+      playBtn.innerHTML='&#9654;';
+    }
+  };
+  window.mcNext     = function(){ loadTrack((current+1)%tracks.length, true); };
+  window.mcPrev     = function(){ loadTrack((current-1+tracks.length)%tracks.length, true); };
+  window.mcSkipBack = function(){ audio.currentTime=Math.max(0,audio.currentTime-10); };
+  window.mcSkipFwd  = function(){ audio.currentTime=Math.min(audio.duration||0,audio.currentTime+10); };
+  window.mcSetVol   = function(v){ audio.volume=v; };
+  window.mcSeek = function(e){
+    var rect=document.getElementById('mc-seekbar').getBoundingClientRect();
+    if(audio.duration) audio.currentTime=((e.clientX-rect.left)/rect.width)*audio.duration;
+  };
+  window.mcCollapse = function(){
+    listVisible=!listVisible;
+    tracklist.style.display=listVisible?'':'none';
+    collapseDiv.innerHTML=listVisible?'&#9650; hide':'&#9660; show';
+  };
+
+  buildList();
+  loadTrack(0, false);
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
