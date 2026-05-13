@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Credits - S.P.Y.D.E.R.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== STAR WARS CRAWL ===== */
+#crawlWrapper {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 400px;
+  z-index: 10;
+}
+
+#crawl {
+  position: absolute;
+  bottom: -100%;
+  width: 60%;
+  max-width: 600px;
+  text-align: center;
+  transform-origin: bottom center;
+  transform: rotateX(25deg);
+  animation: crawlUp 14s linear forwards;
+  color: #00f3ff;
+}
+
+@keyframes crawlUp {
+  0% { bottom: -100%; }
+  100% { bottom: 200%; }
+}
+
+.crawl-title {
+  font-size: 28px;
+  color: #fff;
+  text-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.crawl-sub {
+  font-size: 13px;
+  color: #00f3ff;
+  line-height: 2.4;
+  margin-bottom: 30px;
+  text-shadow: 0 0 8px #00f3ff;
+}
+
+.crawl-name {
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 0 15px #00f3ff;
+  margin: 20px 0;
+  line-height: 2;
+}
+
+.crawl-role {
+  font-size: 10px;
+  color: #557799;
+  margin-bottom: 30px;
+  line-height: 2;
+}
+
+.crawl-divider {
+  color: #00f3ff44;
+  font-size: 20px;
+  margin: 30px 0;
+  letter-spacing: 10px;
+}
+
+/* Stars background */
+#stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===== CREDITS LIST ===== */
+#creditsList {
+  position: fixed;
+  inset: 0;
+  background: #020817;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 1s ease;
+  padding: 40px 20px;
+}
+#creditsList.show {
+  display: flex;
+  opacity: 1;
+}
+
+.credits-title {
+  font-size: 16px;
+  color: #fff;
+  text-shadow: 0 0 10px #00f3ff, 0 0 25px #00f3ff;
+  margin-bottom: 50px;
+  animation: glow 3s infinite ease-in-out;
+}
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff; }
+  50% { text-shadow: 0 0 25px #00f3ff, 0 0 50px #00f3ff; }
+}
+
+.credit-entry {
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.credit-entry.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.credit-name {
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 0 10px #00f3ff44;
+  margin-bottom: 8px;
+}
+.credit-role {
+  font-size: 9px;
+  color: #00f3ff;
+  letter-spacing: 3px;
+}
+
+.credit-divider {
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00f3ff44, transparent);
+  margin: 30px auto;
+}
+
+.close-btn {
+  margin-top: 50px;
+  padding: 14px 30px;
+  background: transparent;
+  border: 2px solid #00f3ff;
+  color: #00f3ff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  opacity: 0;
+  transition: opacity 0.6s ease, background 0.3s, box-shadow 0.3s;
+}
+.close-btn.visible {
+  opacity: 1;
+}
+.close-btn:hover {
+  background: #00f3ff;
+  color: #020817;
+  box-shadow: 0 0 25px #00f3ff;
+}
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<canvas id="stars"></canvas>
+
+<!-- Star Wars Crawl -->
+<div id="crawlWrapper">
+  <div id="crawl">
+    <div class="crawl-title">S.P.Y.D.E.R. GAMES</div>
+
+    <div class="crawl-sub">CREATED BY</div>
+    <div class="crawl-name">JACK</div>
+    <div class="crawl-role">FOUNDER & LEAD DEVELOPER</div>
+
+    <div class="crawl-divider">— — —</div>
+
+    <div class="crawl-sub">CO-CREATED BY</div>
+    <div class="crawl-name">AJ</div>
+    <div class="crawl-role">CO-DEVELOPER</div>
+
+    <div class="crawl-divider">— — —</div>
+
+    <div class="crawl-sub">AI ASSISTANCE BY</div>
+    <div class="crawl-name">CLAUDE</div>
+    <div class="crawl-role">AI DEVELOPMENT ASSISTANT</div>
+    <div class="crawl-role">BY ANTHROPIC</div>
+
+    <div class="crawl-divider">— — —</div>
+
+    <div class="crawl-sub">GAME CODE SOURCED FROM</div>
+    <div class="crawl-name">ULTIMATE GAME STASH</div>
+    <div class="crawl-role">WHERE WE GOT MOST OF THE CODE FOR THE GAMES</div>
+
+    <div class="crawl-divider">— — —</div>
+
+    <div class="crawl-sub">THANK YOU FOR PLAYING</div>
+    <div class="crawl-name">S.P.Y.D.E.R. GAMES V5</div>
+  </div>
+</div>
+
+<!-- Credits List -->
+<div id="creditsList">
+  <div class="credits-title">✦ CREDITS ✦</div>
+
+  <div class="credit-entry" id="c1">
+    <div class="credit-name">JACK 🕷️</div>
+    <div class="credit-role">FOUNDER & LEAD DEVELOPER</div>
+  </div>
+
+  <div class="credit-divider"></div>
+
+  <div class="credit-entry" id="c2">
+    <div class="credit-name">AJ 🐶</div>
+    <div class="credit-role">CO-DEVELOPER</div>
+  </div>
+
+  <div class="credit-divider"></div>
+
+  <div class="credit-entry" id="c3">
+    <div class="credit-name">CLAUDE 🤖</div>
+    <div class="credit-role">AI DEVELOPMENT ASSISTANT — ANTHROPIC</div>
+  </div>
+
+  <div class="credit-divider"></div>
+
+  <div class="credit-entry" id="c4">
+    <div class="credit-name">ULTIMATE GAME STASH 🎮</div>
+    <div class="credit-role">WHERE WE GOT MOST OF THE CODE FOR THE GAMES</div>
+  </div>
+
+  <button class="close-btn" id="closeBtn" onclick="window.location.href='index.html'">
+    ✕ CLOSE
+  </button>
+</div>
+
+<script>
+// ===== STARS =====
+const starCanvas = document.getElementById('stars');
+const sCtx = starCanvas.getContext('2d');
+let stars = [];
+
+function initStars() {
+  starCanvas.width = window.innerWidth;
+  starCanvas.height = window.innerHeight;
+  stars = Array.from({ length: 200 }, () => ({
+    x: Math.random() * starCanvas.width,
+    y: Math.random() * starCanvas.height,
+    size: Math.random() * 1.5 + 0.3,
+    opacity: Math.random() * 0.7 + 0.1,
+    flicker: Math.random() * Math.PI * 2
+  }));
+}
+
+function drawStars() {
+  sCtx.fillStyle = 'rgba(0,0,0,0.1)';
+  sCtx.fillRect(0, 0, starCanvas.width, starCanvas.height);
+  stars.forEach(s => {
+    s.flicker += 0.02;
+    let op = s.opacity * (0.7 + Math.sin(s.flicker) * 0.3);
+    sCtx.beginPath();
+    sCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+    sCtx.fillStyle = `rgba(255,255,255,${op})`;
+    sCtx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+
+initStars();
+drawStars();
+window.addEventListener('resize', initStars);
+
+// ===== TRANSITION FROM CRAWL TO LIST =====
+setTimeout(() => {
+  const crawl = document.getElementById('crawlWrapper');
+  const list = document.getElementById('creditsList');
+
+  // Fade out crawl
+  crawl.style.transition = 'opacity 1.5s ease';
+  crawl.style.opacity = '0';
+
+  setTimeout(() => {
+    crawl.style.display = 'none';
+    list.style.display = 'flex';
+
+    setTimeout(() => {
+      list.style.opacity = '1';
+
+      // Stagger credit entries
+      setTimeout(() => document.getElementById('c1').classList.add('visible'), 300);
+      setTimeout(() => document.getElementById('c2').classList.add('visible'), 700);
+      setTimeout(() => document.getElementById('c3').classList.add('visible'), 1100);
+      setTimeout(() => document.getElementById('c4').classList.add('visible'), 1500);
+      setTimeout(() => document.getElementById('closeBtn').classList.add('visible'), 2000);
+    }, 100);
+
+  }, 1500);
+
+}, 14000); // matches crawl animation duration
+</script>
+</body>
+</html>
+
+
